@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="net.area54labs.jadwalkrl2.SelectorActity$PlaceholderFragment">
+
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/AppTheme.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_station" />
+
+        <TextView
+            android:id="@+id/selected_station"
+            style="@style/AppTheme.Text.Dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/keyline_2" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/station_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

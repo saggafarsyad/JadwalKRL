@@ -1,0 +1,101 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Detail Style-->
+    <style name="AppTheme.Detail" />
+
+    <style name="AppTheme.Detail.Key">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+    </style>
+
+    <style name="AppTheme.Detail.Value">
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+    <style name="AppTheme.Detail.Time">
+        <item name="android:textSize">48sp</item>
+    </style>
+
+    <style name="AppTheme.Detail.TrainNo">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <!-- Header Style-->
+    <style name="AppTheme.Header">
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">@color/primary</item>
+    </style>
+
+    <!-- Header Style-->
+    <style name="AppTheme.Header.Result">
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">@color/accent</item>
+    </style>
+
+
+    <style name="AppTheme.Header.Search" parent="AppTheme.Header">
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+
+    <style name="AppTheme.Header.Station" parent="AppTheme.Text.Dark">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+    <!-- ListItem Style-->
+    <style name="AppTheme.ListItem" />
+
+    <style name="AppTheme.ListItem.Time">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="AppTheme.ListItem.Text">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+    </style>
+
+    <!-- Generic Text Style -->
+    <style name="AppTheme.Text" />
+
+    <style name="AppTheme.Text.Dark">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- Generic Button Style -->
+    <style name="AppTheme.Button" />
+
+    <style name="AppTheme.Button.Station" parent="AppTheme.Text.Dark">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:background">@drawable/bg_primary_button</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
+
+    <style name="AppTheme.Button.SearchSwitcher">
+        <item name="android:layout_height">16dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:background">@drawable/bg_primary_button</item>
+    </style>
+
+    <!-- Input Style-->
+    <style name="AppTheme.Input" />
+
+    <style name="AppTheme.Input.Time" parent="Widget.AppCompat.EditText">
+        <item name="android:maxLength">2</item>
+        <item name="android:inputType">numberDecimal|numberSigned</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+</resources>
