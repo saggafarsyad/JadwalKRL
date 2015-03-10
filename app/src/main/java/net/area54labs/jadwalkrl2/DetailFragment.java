@@ -52,7 +52,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_DEPART_TIMESTAMP = 3;
     public static final int COL_UNIT_NO = 4;
     public static final int COL_SEARCH_KEY = 5;
-    private static final String SCHEDULE_SHARE_HASHTAG = " #jadwalkrl.com";
+    private static final String SCHEDULE_SHARE_HASHTAG = " #jadwalkrl";
     private final String LOG_TAG = this.getClass().getSimpleName();
     long mScheduleId = -1;
     long mDepartTimestamp = -1;
