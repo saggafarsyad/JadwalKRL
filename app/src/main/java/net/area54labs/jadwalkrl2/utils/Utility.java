@@ -13,6 +13,7 @@ import static net.area54labs.jadwalkrl2.data.AppContract.StationEntry;
  */
 public class Utility {
     public static final String SELECTED_STATION_KEY = "selected_station";
+    public static final String TWO_PANE_KEY = "two_pane";
 
     public static final int MODE_RANDOM = 0;
     public static final int MODE_PREV = 1;

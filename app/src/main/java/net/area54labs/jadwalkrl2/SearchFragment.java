@@ -19,6 +19,7 @@ import net.area54labs.jadwalkrl2.utils.Utility;
 
 public class SearchFragment extends Fragment {
 
+    boolean mTwoPane;
     boolean isAdvancedSearchMode;
 
     LinearLayout layoutQuickSearch;
@@ -38,6 +39,16 @@ public class SearchFragment extends Fragment {
     SearchSetting searchSetting;
 
     public SearchFragment() {
+    }
+
+    public static SearchFragment newInstance(boolean twoPane) {
+        SearchFragment fragment = new SearchFragment();
+
+        Bundle args = new Bundle();
+        args.putBoolean(Utility.TWO_PANE_KEY, twoPane);
+
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -85,11 +96,7 @@ public class SearchFragment extends Fragment {
         inputTimeTopLimit.setText(String.valueOf(searchSetting.getTimeTopLimit()));
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
+    public void refreshView() {
         // Load search settings
         searchSetting = new SearchSetting(getActivity());
 
@@ -98,13 +105,33 @@ public class SearchFragment extends Fragment {
         } else {
             showQuickSearch();
         }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        refreshView();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Get arguments
+        if (getArguments() != null) {
+            mTwoPane = getArguments().getBoolean(Utility.TWO_PANE_KEY);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+
+        View fragmentBottomContainer = rootView.findViewById(R.id.fragment_bottom);
+
+        // Tablet or phone? set visibility of fragment bottom
+        if (mTwoPane) {
+            fragmentBottomContainer.setVisibility(View.VISIBLE);
+        } else {
+            fragmentBottomContainer.setVisibility(View.GONE);
+        }
 
         // Inflate layouts
         layoutQuickSearch = (LinearLayout) rootView.findViewById(R.id.quick_search_layout);
@@ -154,8 +181,14 @@ public class SearchFragment extends Fragment {
 
                 searchSetting.save();
 
-                Intent intent = new Intent(getActivity(), ScheduleActivity.class);
-                startActivity(intent);
+                if (mTwoPane) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_bottom, ScheduleFragment.newInstance(mTwoPane), MainActivity.SELECTOR_FRAGMENT_TAG)
+                            .commit();
+                } else {
+                    Intent intent = new Intent(getActivity(), ScheduleActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -163,9 +196,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Open station select fragment
-                Intent intent = new Intent(getActivity(), SelectorActivity.class);
-                intent.putExtra(Utility.SELECTED_STATION_KEY, R.id.station_button);
-                startActivity(intent);
+                openStationSelector(R.id.station_button);
             }
         });
 
@@ -173,9 +204,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Open station select fragment
-                Intent intent = new Intent(getActivity(), SelectorActivity.class);
-                intent.putExtra(Utility.SELECTED_STATION_KEY, R.id.depart_from_station_button);
-                startActivity(intent);
+                openStationSelector(R.id.depart_from_station_button);
             }
         });
 
@@ -183,9 +212,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Open station select fragment
-                Intent intent = new Intent(getActivity(), SelectorActivity.class);
-                intent.putExtra(Utility.SELECTED_STATION_KEY, R.id.depart_for_station_button);
-                startActivity(intent);
+                openStationSelector(R.id.depart_for_station_button);
             }
         });
 
@@ -211,6 +238,18 @@ public class SearchFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void openStationSelector(int buttonId) {
+        if (mTwoPane) {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_right, SelectorFragment.newInstance(mTwoPane, buttonId), MainActivity.SELECTOR_FRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(getActivity(), SelectorActivity.class);
+            intent.putExtra(Utility.SELECTED_STATION_KEY, buttonId);
+            startActivity(intent);
+        }
     }
 
     private void setStationOptions(int buttonId, String stationId) {

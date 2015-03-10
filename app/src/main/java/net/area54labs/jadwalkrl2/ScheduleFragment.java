@@ -56,8 +56,19 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
     private ScheduleAdapter mScheduleAdapter;
     private SearchSetting mSearchSetting;
 
-    public ScheduleFragment() {
+    private boolean mTwoPane;
 
+    public ScheduleFragment() {
+    }
+
+    public static ScheduleFragment newInstance(boolean twoPane) {
+        ScheduleFragment fragment = new ScheduleFragment();
+
+        Bundle args = new Bundle();
+        args.putBoolean(Utility.TWO_PANE_KEY, twoPane);
+
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -84,41 +95,49 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            mTwoPane = getArguments().getBoolean(Utility.TWO_PANE_KEY);
+        }
+
+        mSearchSetting = new SearchSetting(getActivity());
+
         View rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
 
         View headerLayout = rootView.findViewById(R.id.header);
         View timeLayout = rootView.findViewById(R.id.time_layout);
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        iconView = (ImageView) headerLayout.findViewById(R.id.icon);
-        departFromTextView = (TextView) headerLayout.findViewById(R.id.depart_from_station_text);
-        departForTextView = (TextView) headerLayout.findViewById(R.id.depart_for_station_text);
-        timeBottomLimitTextView = (TextView) headerLayout.findViewById(R.id.time_bottom_limit_text);
-        timeTopLimitTextView = (TextView) headerLayout.findViewById(R.id.time_top_limit_text);
 
-
-        mSearchSetting = new SearchSetting(getActivity());
-
-        departFromTextView.setText(Utility.getStationName(getActivity(), mSearchSetting.getStationDepartFrom()));
-
-        if (mSearchSetting.isAdvanced()) {
-            int height = (int) getResources().getDimension(R.dimen.icon_advanced_height);
-            iconView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height));
-            iconView.setImageResource(R.drawable.ic_route);
-
-            departForTextView.setVisibility(View.VISIBLE);
-            timeLayout.setVisibility(View.VISIBLE);
-
-            departForTextView.setText(Utility.getStationName(getActivity(), mSearchSetting.getStationDepartFor()));
-
-            timeBottomLimitTextView.setText(String.valueOf(mSearchSetting.getTimeBottomLimit()) + ".00");
-            timeTopLimitTextView.setText(String.valueOf(mSearchSetting.getTimeTopLimit()) + ".00");
+        if (mTwoPane) {
+            headerLayout.setVisibility(View.GONE);
         } else {
-            iconView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            iconView.setImageResource(R.drawable.ic_station);
+            iconView = (ImageView) headerLayout.findViewById(R.id.icon);
+            departFromTextView = (TextView) headerLayout.findViewById(R.id.depart_from_station_text);
+            departForTextView = (TextView) headerLayout.findViewById(R.id.depart_for_station_text);
+            timeBottomLimitTextView = (TextView) headerLayout.findViewById(R.id.time_bottom_limit_text);
+            timeTopLimitTextView = (TextView) headerLayout.findViewById(R.id.time_top_limit_text);
 
-            departForTextView.setVisibility(View.GONE);
-            timeLayout.setVisibility(View.GONE);
+            departFromTextView.setText(Utility.getStationName(getActivity(), mSearchSetting.getStationDepartFrom()));
+
+            if (mSearchSetting.isAdvanced()) {
+                int height = (int) getResources().getDimension(R.dimen.icon_advanced_height);
+                iconView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, height));
+                iconView.setImageResource(R.drawable.ic_route);
+
+                departForTextView.setVisibility(View.VISIBLE);
+                timeLayout.setVisibility(View.VISIBLE);
+
+                departForTextView.setText(Utility.getStationName(getActivity(), mSearchSetting.getStationDepartFor()));
+
+                timeBottomLimitTextView.setText(String.valueOf(mSearchSetting.getTimeBottomLimit()) + ".00");
+                timeTopLimitTextView.setText(String.valueOf(mSearchSetting.getTimeTopLimit()) + ".00");
+            } else {
+                iconView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                iconView.setImageResource(R.drawable.ic_station);
+
+                departForTextView.setVisibility(View.GONE);
+                timeLayout.setVisibility(View.GONE);
+            }
         }
 
         mScheduleAdapter = new ScheduleAdapter(getActivity(), null, 0);
@@ -133,6 +152,7 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 if (cursor != null) {
                     long scheduleId = cursor.getLong(cursor.getColumnIndex(ScheduleEntry._ID));
+
                     ((Callback) getActivity())
                             .onItemSelected(ScheduleEntry.buildUri(scheduleId));
                 }
@@ -193,7 +213,10 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
             } else {
                 // No schedules returned. Back to main screen
                 Toast.makeText(getActivity(), "Schedule not found", Toast.LENGTH_SHORT).show();
-                getActivity().finish();
+
+                if (!mTwoPane) {
+                    getActivity().finish();
+                }
             }
         }
     }

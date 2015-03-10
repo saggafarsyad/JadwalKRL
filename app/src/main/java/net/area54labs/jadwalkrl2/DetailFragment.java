@@ -65,12 +65,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     ImageButton mNotifyButton;
     private String strShareSchedule;
     private ShareActionProvider mShareActionProvider;
+
+
     private Uri mUri;
 
     public DetailFragment() {
-        setHasOptionsMenu(true);
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -104,30 +104,35 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         Bundle args = getArguments();
 
+        View rootView;
+
         if (args != null) {
+            setHasOptionsMenu(true);
             mUri = args.getParcelable(DetailFragment.URI_EXTRA);
-        }
 
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+            rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        // Get all views
-        mDepartFromStationTextView = (TextView) rootView.findViewById(R.id.depart_from_station_text);
-        mDepartForStationTextView = (TextView) rootView.findViewById(R.id.depart_for_station_text);
-        mNextStationTextView = (TextView) rootView.findViewById(R.id.next_station_text);
-        mRouteNameTextView = (TextView) rootView.findViewById(R.id.route_text);
-        mDepartTimeTextView = (TextView) rootView.findViewById(R.id.depart_time_text);
-        mTrainNoTextView = (TextView) rootView.findViewById(R.id.train_no_text);
-        mNotifyButton = (ImageButton) rootView.findViewById(R.id.notification_button);
+            // Get all views
+            mDepartFromStationTextView = (TextView) rootView.findViewById(R.id.depart_from_station_text);
+            mDepartForStationTextView = (TextView) rootView.findViewById(R.id.depart_for_station_text);
+            mNextStationTextView = (TextView) rootView.findViewById(R.id.next_station_text);
+            mRouteNameTextView = (TextView) rootView.findViewById(R.id.route_text);
+            mDepartTimeTextView = (TextView) rootView.findViewById(R.id.depart_time_text);
+            mTrainNoTextView = (TextView) rootView.findViewById(R.id.train_no_text);
+            mNotifyButton = (ImageButton) rootView.findViewById(R.id.notification_button);
 
-        mNotifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mScheduleId != -1) {
-                    setNotifySchedule();
+            mNotifyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mScheduleId != -1) {
+                        setNotifySchedule();
+                    }
                 }
-            }
-        });
-
+            });
+        } else {
+            setHasOptionsMenu(false);
+            rootView = inflater.inflate(R.layout.fragment_detail_null, container, false);
+        }
         return rootView;
     }
 
