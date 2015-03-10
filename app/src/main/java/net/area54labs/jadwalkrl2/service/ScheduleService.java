@@ -42,9 +42,9 @@ public class ScheduleService extends IntentService {
     private long getTodayTimestamp() {
         //Today timestamp
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MINUTE, 1);
         cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.HOUR, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
 
         return cal.getTimeInMillis() / 1000;
     }
@@ -63,7 +63,11 @@ public class ScheduleService extends IntentService {
                 },
                 null);
 
-        if (cursor.getCount() > 0) return true;
+        if (cursor.getCount() > 0) {
+            cursor.close();
+            return true;
+        }
+        cursor.close();
         return false;
     }
 
@@ -81,6 +85,7 @@ public class ScheduleService extends IntentService {
                 },
                 null);
         if (cursor.moveToFirst()) {
+            cursor.close();
             Log.v(LOG_TAG, "Params found in the database!, returning");
             return -1;
         } else {
@@ -92,6 +97,7 @@ public class ScheduleService extends IntentService {
 
             Uri searchInsertUri = getContentResolver().insert(SearchEntry.CONTENT_URI, searchRequestValues);
 
+            cursor.close();
             return ContentUris.parseId(searchInsertUri);
         }
     }
@@ -113,7 +119,7 @@ public class ScheduleService extends IntentService {
         if (searchCursor.getCount() > 0) {
             while (searchCursor.moveToNext()) {
                 long searchId = searchCursor.getInt(searchCursor.getColumnIndex(SearchEntry._ID));
-                long searchTimestamp = searchCursor.getLong(searchCursor.getColumnIndex(SearchEntry.COLUMN_TIMESTAMP));
+
                 getContentResolver().delete(
                         ScheduleEntry.CONTENT_URI,
                         ScheduleEntry.COLUMN_SEARCH_KEY + " = ? ",
@@ -130,10 +136,12 @@ public class ScheduleService extends IntentService {
                         }
                 );
 
+                searchCursor.close();
                 return result;
             }
         }
 
+        searchCursor.close();
         return -1;
     }
 
@@ -178,7 +186,7 @@ public class ScheduleService extends IntentService {
             urlConnection.connect();
 
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 scheduleJsonStr = null;
             }

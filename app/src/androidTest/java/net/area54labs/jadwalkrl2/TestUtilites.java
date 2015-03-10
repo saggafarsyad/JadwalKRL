@@ -11,6 +11,7 @@ import android.test.AndroidTestCase;
 import net.area54labs.jadwalkrl2.data.AppContract;
 import net.area54labs.jadwalkrl2.utils.PollingCheck;
 import net.area54labs.jadwalkrl2.utils.SearchSetting;
+import net.area54labs.jadwalkrl2.utils.Utility;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -241,6 +242,33 @@ public class TestUtilites extends AndroidTestCase {
         assertTrue("Bottom limit is not valid: " + searchSetting.getTimeBottomLimit(), searchSetting.getTimeBottomLimit() >= 1 && searchSetting.getTimeBottomLimit() <= 24);
         assertTrue("Top limit is not valid: " + searchSetting.getTimeTopLimit(), searchSetting.getTimeTopLimit() >= 1 && searchSetting.getTimeTopLimit() <= 24);
         assertTrue("Range is not valid ", searchSetting.getTimeBottomLimit() < searchSetting.getTimeTopLimit());
+    }
+
+    public void testGenerateNotificationTimestamp() {
+        // Depart Timestamp is 5:00, Notification time must be 10 minutes before
+
+        int expectedHour = 0;
+        int expectedMinutes = 1;
+        long expectedTimestamp = 1425919860;
+
+        int minutes = 10 * 60;
+        long mDepartTimestamp = 60;
+
+        int departHour = Utility.getHourFromTimestamp(mDepartTimestamp);
+        int departMinutes = Utility.getMinutesFromTimestamp(mDepartTimestamp);
+
+        assertEquals("Hour is not expected. returns: " + expectedHour, expectedHour, departHour);
+        assertEquals("Minutes time is not expected. returns: " + expectedMinutes, expectedMinutes, departMinutes);
+
+        if (departHour == 0) departHour = 24;
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MINUTE, departMinutes);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.HOUR_OF_DAY, departHour);
+
+        long notificationTimestamp = cal.getTimeInMillis() / 1000 - minutes;
+
+        assertEquals("Notification time is not expected. returns: " + notificationTimestamp, expectedTimestamp, notificationTimestamp);
     }
 
     static class TestContentObserver extends ContentObserver {

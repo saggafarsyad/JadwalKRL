@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListPreference
+        android:defaultValue="@string/pref_minutes_10"
+        android:entries="@array/pref_minutes_labels"
+        android:entryValues="@array/pref_minutes_values"
+        android:key="@string/pref_notification_time_key"
+        android:title="@string/pref_notification_time_label" />
+
+</PreferenceScreen>
+

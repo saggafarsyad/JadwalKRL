@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="net.area54labs.jadwalkrl2.SelectorActivity">
+    tools:context="net.area54labs.jadwalkrl2.RouteMapActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

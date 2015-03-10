@@ -31,15 +31,6 @@ public class TestProvider extends AndroidTestCase {
                 RouteEntry.CONTENT_DIR_TYPE,
                 mContext.getContentResolver().getType(RouteEntry.buildPathUri(testRouteId))
         );
-        assertEquals("Error: the RouteEntry.buildPathPrevStationUri should return RouteEntry.CONTENT_ITEM_TYPE",
-                RouteEntry.CONTENT_ITEM_TYPE,
-                mContext.getContentResolver().getType(RouteEntry.buildPathPrevStationUri(testRouteId, testStationBogorId))
-        );
-        assertEquals("Error: the RouteEntry.buildPathNextStationUri should return RouteEntry.CONTENT_ITEM_TYPE",
-                RouteEntry.CONTENT_ITEM_TYPE,
-                mContext.getContentResolver().getType(RouteEntry.buildPathNextStationUri(testRouteId, testStationDepokId))
-        );
-
         assertEquals("Error: the StationEntry.CONTENT_URI should return StationEntry.CONTENT_DIR_TYPE",
                 StationEntry.CONTENT_DIR_TYPE,
                 mContext.getContentResolver().getType(StationEntry.CONTENT_URI)

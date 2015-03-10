@@ -1,35 +1,28 @@
 package net.area54labs.jadwalkrl2;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
-public class DetailActivity extends ActionBarActivity {
+public class RouteMapActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_route_map);
         if (savedInstanceState == null) {
-            Bundle args = new Bundle();
-            args.putParcelable(DetailFragment.URI_EXTRA, getIntent().getData());
-
-            DetailFragment fragment = new DetailFragment();
-            fragment.setArguments(args);
-
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment)
+                    .add(R.id.container, new RouteMapFragment())
                     .commit();
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        getMenuInflater().inflate(R.menu.menu_route_map, menu);
         return true;
     }
 
@@ -42,11 +35,9 @@ public class DetailActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 }

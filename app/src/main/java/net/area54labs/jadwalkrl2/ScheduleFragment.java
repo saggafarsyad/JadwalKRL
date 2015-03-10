@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,25 +36,23 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
             AppContract.RouteEntry.TABLE_NAME + "." + AppContract.RouteEntry.COLUMN_NAME + " AS " + AppContract.RouteEntry.TABLE_NAME + "_" + AppContract.RouteEntry.COLUMN_NAME,
             ScheduleEntry.TABLE_NAME + "." + ScheduleEntry.COLUMN_UNIT_NO + " AS " + ScheduleEntry.COLUMN_UNIT_NO
     };
-
     public static final String[] QUICK_SCHEDULE_RESULT_COLUMNS = new String[]{
             ScheduleEntry.TABLE_NAME + "." + ScheduleEntry._ID + " AS " + ScheduleEntry._ID,
             ScheduleEntry.TABLE_NAME + "." + ScheduleEntry.COLUMN_DEPART_TIMESTAMP + " AS " + ScheduleEntry.COLUMN_DEPART_TIMESTAMP,
             ScheduleEntry.TABLE_NAME + "." + ScheduleEntry.COLUMN_ROUTE_KEY,
             ScheduleEntry.TABLE_NAME + "." + ScheduleEntry.COLUMN_STATION_KEY,
     };
-
+    private static final String SELECTED_KEY = "selected_schedule";
     private static final int SCHEDULE_LOADER = 1;
-
+    ProgressBar progressBar;
     TextView departFromTextView;
     TextView departForTextView;
     TextView timeBottomLimitTextView;
     TextView timeTopLimitTextView;
-
     ImageView iconView;
-
     ListView scheduleList;
     int counter = 0;
+    private int mPosition = ListView.INVALID_POSITION;
     private ScheduleAdapter mScheduleAdapter;
     private SearchSetting mSearchSetting;
 
@@ -65,6 +64,15 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
     public void onStart() {
         super.onStart();
         fetchSchedule();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPosition != ListView.INVALID_POSITION) {
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+
+        super.onSaveInstanceState(outState);
     }
 
     private void fetchSchedule() {
@@ -81,6 +89,7 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
         View headerLayout = rootView.findViewById(R.id.header);
         View timeLayout = rootView.findViewById(R.id.time_layout);
 
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         iconView = (ImageView) headerLayout.findViewById(R.id.icon);
         departFromTextView = (TextView) headerLayout.findViewById(R.id.depart_from_station_text);
         departForTextView = (TextView) headerLayout.findViewById(R.id.depart_for_station_text);
@@ -127,14 +136,22 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
                     ((Callback) getActivity())
                             .onItemSelected(ScheduleEntry.buildUri(scheduleId));
                 }
+
+                mPosition = position;
             }
         });
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
+            mPosition = savedInstanceState.getInt(SELECTED_KEY);
+        }
 
         return rootView;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        progressBar.setVisibility(View.VISIBLE);
+
         Uri scheduleUri = ScheduleEntry.buildSearchUri(mSearchSetting.toString());
 
         String[] projection;
@@ -165,8 +182,14 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
         counter++;
 
         if (counter >= 2) {
+            progressBar.setVisibility(View.GONE);
+
             if (data.getCount() > 0) {
                 mScheduleAdapter.swapCursor(data);
+
+                if (mPosition != ListView.INVALID_POSITION) {
+                    scheduleList.smoothScrollToPosition(mPosition);
+                }
             } else {
                 // No schedules returned. Back to main screen
                 Toast.makeText(getActivity(), "Schedule not found", Toast.LENGTH_SHORT).show();

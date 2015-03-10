@@ -157,7 +157,7 @@ public class Utility {
         return result;
     }
 
-    public static String getSearchSetting(Context context, long searchId) {
+    public static String getSearchSettingString(Context context, long searchId) {
         Cursor cursor = context.getContentResolver().query(
                 SearchEntry.buildUri(searchId), null, null, null, null
         );
@@ -172,9 +172,18 @@ public class Utility {
         return null;
     }
 
+
+    public static int getHourFromTimestamp(long timestamp) {
+        return (int) timestamp / 3600;
+    }
+
+    public static int getMinutesFromTimestamp(long timestamp) {
+        return (int) (timestamp % 3600) / 60;
+    }
+
     public static String departTimestampToString(long timestamp) {
-        int hour = (int) timestamp / 3600;
-        int minutes = (int) (timestamp % 3600) / 60;
+        int hour = getHourFromTimestamp(timestamp);
+        int minutes = getMinutesFromTimestamp(timestamp);
 
         String strHour = String.valueOf(hour);
 

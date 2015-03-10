@@ -18,8 +18,6 @@ public class TestUriMatcher extends AndroidTestCase {
     private static final int testRouteId = 1;
     private static final Uri TEST_ROUTE_ID = RouteEntry.buildUri(testRouteId);
     private static final Uri TEST_ROUTE_PATH = RouteEntry.buildPathUri(testRouteId);
-    private static final Uri TEST_ROUTE_PATH_NEXT_STATION = RouteEntry.buildPathNextStationUri(testRouteId, TestUtilites.stationBogorId);
-    private static final Uri TEST_ROUTE_PATH_PREV_STATION = RouteEntry.buildPathPrevStationUri(testRouteId, TestUtilites.stationDepokId);
     private static final String testSearchSettings = "DP-1-24";
     private static final Uri TEST_SCHEDULE_BY_SEARCH = ScheduleEntry.buildSearchUri(testSearchSettings);
     private static final int testSearchId = 3;
@@ -42,10 +40,6 @@ public class TestUriMatcher extends AndroidTestCase {
                 testMatcher.match(TEST_ROUTE_ID), AppProvider.URI_ROUTE_ID);
         assertEquals("Error: the URI_ROUTE_PATH_ID URI was matched incorrectly.",
                 testMatcher.match(TEST_ROUTE_PATH), AppProvider.URI_ROUTE_PATH_ID);
-        assertEquals("Error: the URI_ROUTE_PATH_NEXT_STATION URI was matched incorrectly.",
-                testMatcher.match(TEST_ROUTE_PATH_NEXT_STATION), AppProvider.URI_ROUTE_PATH_NEXT_STATION);
-        assertEquals("Error: the URI_ROUTE_PATH_NEXT_STATION URI was matched incorrectly.",
-                testMatcher.match(TEST_ROUTE_PATH_PREV_STATION), AppProvider.URI_ROUTE_PATH_PREV_STATION);
 
 
         assertEquals("Error: the URI_STATION URI was matched incorrectly.",

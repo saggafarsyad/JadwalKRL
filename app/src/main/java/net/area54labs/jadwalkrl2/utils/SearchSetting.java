@@ -13,6 +13,7 @@ import java.util.Calendar;
  */
 public class SearchSetting {
     private static final String DELIMITER = "-";
+    private static final int QUICK_SEARCH_API = 1;
     private static final int QUICK_SEARCH = 3;
     private static final int ADVANCED_SEARCH = 4;
     private final int TIME_DIFFERENCE = 2;
