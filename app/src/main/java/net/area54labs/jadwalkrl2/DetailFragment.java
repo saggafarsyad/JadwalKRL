@@ -53,7 +53,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_UNIT_NO = 4;
     public static final int COL_SEARCH_KEY = 5;
     private static final String SCHEDULE_SHARE_HASHTAG = " #jadwalkrl";
-    private final String LOG_TAG = this.getClass().getSimpleName();
     long mScheduleId = -1;
     long mDepartTimestamp = -1;
     TextView mDepartFromStationTextView;
@@ -184,8 +183,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mRouteNameTextView.setText(mRouteName);
             mDepartTimeTextView.setText(departTime);
             mTrainNoTextView.setText(mUnitNo);
-
-            // @TODO: Change to string format
 
             strShareSchedule = String.format(getActivity().getString(R.string.format_share_text),
                     departTime,

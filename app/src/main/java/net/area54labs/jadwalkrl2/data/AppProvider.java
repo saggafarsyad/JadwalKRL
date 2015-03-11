@@ -43,6 +43,9 @@ public class AppProvider extends ContentProvider {
     public static final int URI_SCHEDULE_BY_SEARCH_SETTING = 502;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private static final SQLiteQueryBuilder sRoutePathQueryBuilder;
+    private static final String sRoutePathSelection =
+            RoutePathEntry.TABLE_NAME + "." + RoutePathEntry.COLUMN_ROUTE_KEY + " = ? ";
+    private static final SQLiteQueryBuilder sScheduleSearchQueryBuilder;
 
     static {
         sRoutePathQueryBuilder = new SQLiteQueryBuilder();
@@ -53,10 +56,6 @@ public class AppProvider extends ContentProvider {
                         " = " + StationEntry.TABLE_NAME + "." + StationEntry._ID
         );
     }
-
-    private static final String sRoutePathSelection =
-            RoutePathEntry.TABLE_NAME + "." + RoutePathEntry.COLUMN_ROUTE_KEY + " = ? ";
-    private static final SQLiteQueryBuilder sScheduleSearchQueryBuilder;
 
     static {
         sScheduleSearchQueryBuilder = new SQLiteQueryBuilder();
@@ -74,9 +73,8 @@ public class AppProvider extends ContentProvider {
         );
     }
 
-    private static final String sScheduleSearchSelection =
-            SearchEntry.TABLE_NAME + "." + SearchEntry.COLUMN_SETTING + " = ? ";
     private AppDbHelper mOpenHelper;
+
 
     // @TODO: 2. Build a uri matcher function
     public static UriMatcher buildUriMatcher() {
@@ -146,12 +144,11 @@ public class AppProvider extends ContentProvider {
                 null);
     }
 
-    private Cursor getSearchSchedule(String searchSetting, String[] projection, String sortOrder) {
-        String[] selectionArgs = new String[]{searchSetting};
+    private Cursor getSearchSchedule(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         return sScheduleSearchQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
-                sScheduleSearchSelection,
+                selection,
                 selectionArgs,
                 null,
                 null,
@@ -296,9 +293,9 @@ public class AppProvider extends ContentProvider {
                 break;
             }
             case URI_SCHEDULE_BY_SEARCH_SETTING: {
-                String strSearchSetting = ScheduleEntry.parseSearchSettings(uri);
+//                String strSearchSetting = ScheduleEntry.parseSearchSettings(uri);
 
-                retCursor = getSearchSchedule(strSearchSetting, projection, sortOrder);
+                retCursor = getSearchSchedule(projection, selection, selectionArgs, sortOrder);
                 break;
             }
             default:

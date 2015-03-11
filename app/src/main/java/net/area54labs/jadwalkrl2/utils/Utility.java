@@ -182,6 +182,10 @@ public class Utility {
         return (int) (timestamp % 3600) / 60;
     }
 
+    public static long getTimestamp(int hours, int minutes) {
+        return (hours * 3600) + (minutes * 60);
+    }
+
     public static String departTimestampToString(long timestamp) {
         int hour = getHourFromTimestamp(timestamp);
         int minutes = getMinutesFromTimestamp(timestamp);

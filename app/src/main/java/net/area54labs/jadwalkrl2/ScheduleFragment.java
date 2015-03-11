@@ -22,9 +22,12 @@ import android.widget.Toast;
 
 import net.area54labs.jadwalkrl2.adapter.ScheduleAdapter;
 import net.area54labs.jadwalkrl2.data.AppContract;
+import net.area54labs.jadwalkrl2.data.AppContract.SearchEntry;
 import net.area54labs.jadwalkrl2.service.ScheduleService;
 import net.area54labs.jadwalkrl2.utils.SearchSetting;
 import net.area54labs.jadwalkrl2.utils.Utility;
+
+import java.util.Calendar;
 
 import static net.area54labs.jadwalkrl2.data.AppContract.ScheduleEntry;
 
@@ -176,15 +179,34 @@ public class ScheduleFragment extends Fragment implements LoaderManager.LoaderCa
 
         String[] projection;
 
+        String selection = SearchEntry.TABLE_NAME + "." + SearchEntry.COLUMN_SETTING + " = ? ";
+        String[] selectionArgs = null;
         if (mSearchSetting.isAdvanced()) {
             projection = ADVANCED_SCHEDULE_RESULT_COLUMNS;
+            selectionArgs = new String[]{
+                    mSearchSetting.toString()
+            };
         } else {
             projection = QUICK_SCHEDULE_RESULT_COLUMNS;
+            selection += " AND " +
+                    ScheduleEntry.TABLE_NAME + "." + ScheduleEntry.COLUMN_DEPART_TIMESTAMP + " >= ? ";
+
+            Calendar cal = Calendar.getInstance();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+
+            if (hour == 24) hour = 0;
+
+            int minutes = cal.get(Calendar.MINUTE);
+            long now = Utility.getTimestamp(hour, minutes);
+            selectionArgs = new String[]{
+                    mSearchSetting.toString(),
+                    String.valueOf(now)
+            };
         }
 
         String sortOrder = ScheduleEntry.TABLE_NAME + "." + ScheduleEntry.COLUMN_DEPART_TIMESTAMP + " ASC";
 
-        return new CursorLoader(getActivity(), scheduleUri, projection, null, null, sortOrder);
+        return new CursorLoader(getActivity(), scheduleUri, projection, selection, selectionArgs, sortOrder);
     }
 
     @Override
