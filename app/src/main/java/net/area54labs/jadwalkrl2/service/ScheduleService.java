@@ -50,16 +50,18 @@ public class ScheduleService extends IntentService {
     }
 
     private boolean isSearchAvailable(String searchSetting) {
-        long todayTimestamp = getTodayTimestamp();
+        long currentTimestamp = Calendar.getInstance().getTimeInMillis() / 1000;
+        long startOfTodayTimestamp = getTodayTimestamp();
         Cursor cursor = getContentResolver().query(
                 SearchEntry.CONTENT_URI,
                 new String[]{
                         SearchEntry._ID
                 },
                 SearchEntry.COLUMN_SETTING + " = ? AND " +
-                        SearchEntry.COLUMN_TIMESTAMP + " >= ? ",
+                        SearchEntry.COLUMN_TIMESTAMP + " >= ?  AND " +
+                        SearchEntry.COLUMN_TIMESTAMP + " <= ?",
                 new String[]{
-                        searchSetting, String.valueOf(todayTimestamp)
+                        searchSetting, String.valueOf(startOfTodayTimestamp), String.valueOf(currentTimestamp)
                 },
                 null);
 
@@ -72,34 +74,14 @@ public class ScheduleService extends IntentService {
     }
 
     private long addSearch(long searchId, String searchSetting, long searchTimestamp) {
-        long todayTimestamp = getTodayTimestamp();
-        Cursor cursor = getContentResolver().query(
-                SearchEntry.CONTENT_URI,
-                new String[]{
-                        SearchEntry._ID
-                },
-                SearchEntry.COLUMN_SETTING + " = ? AND " +
-                        SearchEntry.COLUMN_TIMESTAMP + " < ? ",
-                new String[]{
-                        searchSetting, String.valueOf(todayTimestamp)
-                },
-                null);
-        if (cursor.moveToFirst()) {
-            cursor.close();
-            Log.v(LOG_TAG, "Params found in the database!, returning");
-            return -1;
-        } else {
-            Log.v(LOG_TAG, "Didn't find it in the database, Insert");
-            ContentValues searchRequestValues = new ContentValues();
-            searchRequestValues.put(SearchEntry._ID, searchId);
-            searchRequestValues.put(SearchEntry.COLUMN_SETTING, searchSetting);
-            searchRequestValues.put(SearchEntry.COLUMN_TIMESTAMP, searchTimestamp);
+        ContentValues searchRequestValues = new ContentValues();
+        searchRequestValues.put(SearchEntry._ID, searchId);
+        searchRequestValues.put(SearchEntry.COLUMN_SETTING, searchSetting);
+        searchRequestValues.put(SearchEntry.COLUMN_TIMESTAMP, searchTimestamp);
 
-            Uri searchInsertUri = getContentResolver().insert(SearchEntry.CONTENT_URI, searchRequestValues);
+        Uri searchInsertUri = getContentResolver().insert(SearchEntry.CONTENT_URI, searchRequestValues);
 
-            cursor.close();
-            return ContentUris.parseId(searchInsertUri);
-        }
+        return ContentUris.parseId(searchInsertUri);
     }
 
     private long deleteOldSearch(String strSearchSetting) {
@@ -119,6 +101,7 @@ public class ScheduleService extends IntentService {
         if (searchCursor.getCount() > 0) {
             while (searchCursor.moveToNext()) {
                 long searchId = searchCursor.getInt(searchCursor.getColumnIndex(SearchEntry._ID));
+                long searchTimestamp = searchCursor.getLong(searchCursor.getColumnIndex(SearchEntry.COLUMN_TIMESTAMP));
 
                 getContentResolver().delete(
                         ScheduleEntry.CONTENT_URI,
